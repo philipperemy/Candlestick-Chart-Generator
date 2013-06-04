@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>
+    Candlestick Chart Example - HTML5 jQuery Chart Plugin by jqChart
+</title>
+    <link rel="stylesheet" type="text/css" href="../css/jquery.jqChart.css" />
+    <link rel="stylesheet" type="text/css" href="../css/jquery.jqRangeSlider.css" />
+    <link rel="stylesheet" type="text/css" href="../themes/le-frog/jquery-ui-1.8.20.css" />
+    <script src="../js/jquery-1.5.2.min.js" type="text/javascript"></script>
+    <script src="../js/jquery.jqChart.min.js" type="text/javascript"></script>
+    <script src="../js/jquery.jqRangeSlider.min.js" type="text/javascript"></script>
+    
+    <script lang="javascript" type="text/javascript">
+
+        function round(d) {
+            return Math.round(100 * d) / 100;
+        }
+
+        var data = [];
+
+        var date = new Date(2010, 0, 1);
+
+        var high = 1000;
+        var close = high - Math.random();
+        var low = close - Math.random();
+        var open = (high - low) * Math.random() + low;
+
+        data.push([date, round(high), round(low), round(open), round(close)]);
+
+        for (var day = 2; day <= 5000; day++) {
+
+            date = new Date(2010, 0, day);
+
+            high = open + Math.random()*2;
+            close = high - Math.random()*2;
+            low = close - Math.random()*2;
+            var oldOpen = open;
+            open = (high - low) * Math.random() + low;
+
+            if (low > oldOpen) {
+                low = oldOpen;
+            }
+
+            data.push([date, round(high), round(low), round(open), round(close)]);
+        }
+
+        $(document).ready(function () {
+            $('#jqChart').jqChart({
+                title: { text: 'Candlestick Chart' },
+                legend: { visible: false },
+                animation: { duration: 1 },
+                series: [
+                            {
+                                title: 'Price Index',
+                                type: 'candlestick',
+                                data: data,
+                                priceUpFillStyle: 'green',
+                                priceDownFillStyle: 'red',
+                                strokeStyle: 'black'
+                            }
+                        ]
+            });
+
+            $('#jqChart').bind('tooltipFormat', function (e, data) {
+
+                var tooltip = '<div style="color:' + data.series.fillStyle + '">' + data.series.title + '</div>';
+
+                var date = data.chart.stringFormat(data.x, "mmm d, yyyy");
+
+                tooltip += "Date: <b>" + date + "</b></br>" +
+                           "Open: <b>" + data.open + "</b></br>" +
+                           "High: <b>" + data.high + "</b></br>" +
+                           "Low: <b>" + data.low + "</b></br>" +
+                           "Close: <b>" + data.close + "</b>";
+
+
+                return tooltip;
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <div>
+        <div id="jqChart" style="width: 1300px; height: 500px;">
+        </div>
+    </div>
+</body>
+</html>
